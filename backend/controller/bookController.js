@@ -3,7 +3,7 @@ const db = require('../config/db')
 
 const getAllBooks = async (req, res) => {
     try {
-        const data = await db.query('SELECT * from book')
+        const data = await db.query('SELECT book.*, author.author_name FROM book JOIN author ON book.author_id = author.author_id')
         if (!data) {
             return res.status(404).send({
                 message: 'no records found!'
