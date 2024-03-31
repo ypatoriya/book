@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const cors = require('cors')
-
+const cookieParser = require('cookie-parser')
 
 //env
 const dotenv = require('dotenv');
@@ -15,7 +15,8 @@ const PORT = process.env.PORT || 5000;
 
 app.use(morgan('dev'))
 app.use(express.json());
-app.use(cors())
+app.use(cors({allowedHeaders:'*'}))
+app.use(cookieParser());
 
 app.use('/', require('./routes/bookRoutes'));
 

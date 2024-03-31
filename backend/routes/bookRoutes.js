@@ -4,6 +4,7 @@ const { getAllBooks, addBook, updateBoook } = require("../controller/bookControl
 const express = require('express');
 const { searchBooksAndAuthors } = require("../controller/searchController");
 const { checkLogin } = require("../controller/loginController");
+const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -11,26 +12,27 @@ const router = express.Router();
 router.post('/login',checkLogin)
 
 //all user
-router.get('/allBooks', getAllBooks)
+router.get('/allBooks', verifyToken ,getAllBooks)
 
 //add book
-router.post('/addBook',addBook)
+router.post('/addBook',verifyToken,addBook)
 
 //update book 
-router.put('/updateBook/:id',updateBoook)
+router.put('/updateBook/:id',verifyToken,updateBoook)
 
 //get all authors
-router.get('/allAuthors', getAllAuthors)
+router.get('/allAuthors',verifyToken, getAllAuthors)
 
 //add author
-router.post('/addAuthor', addAuthor) 
+router.post('/addAuthor', verifyToken,addAuthor) 
 
 //update author
-router.put('/updateAuthor/:id',updateAuthor)
+router.put('/updateAuthor/:id',verifyToken,updateAuthor)
 
 //delete author
-router.delete('/deleteAuthor/:id',deleteAuthor)
+router.delete('/deleteAuthor/:id',verifyToken,deleteAuthor)
 
 //search
-router.get('/search',searchBooksAndAuthors)
+router.get('/search',verifyToken,searchBooksAndAuthors)
+
 module.exports = router;
