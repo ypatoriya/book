@@ -4,6 +4,7 @@ import Search from '../src/components/Search';
 import Login from '../src/components/Login';
 import AddBook from './components/AddBook';
 import AllBook from './components/AllBook';
+import UpdateBook from './components/UpdateBook';
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
       <Route path="/search" element={<Search />} />
       <Route path="/addBook" element={<AddBook/>}/>
       <Route path="/allBooks" element={<AllBook/>}/>
+      <Route path="/updateBook" element={<UpdateBook/>}/>
+
     </Routes>
   );
 }

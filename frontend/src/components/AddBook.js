@@ -97,7 +97,7 @@ const AddBook = () => {
             <button type="submit" className="btn btn-primary">Register</button>
 
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-primary btn-sm mx-4"
               type="button"
               onClick={handleClick}
             >
