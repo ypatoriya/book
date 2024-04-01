@@ -12,16 +12,16 @@ const router = express.Router();
 router.post('/login',checkLogin)
 
 //all user
-router.get('/allBooks', verifyToken ,getAllBooks)
+router.get('/allBooks' ,getAllBooks)
 
 //add book
-router.post('/addBook',verifyToken,addBook)
+router.post('/addBook',addBook)
 
 //update book 
 router.put('/updateBook/:id',verifyToken,updateBoook)
 
 //get all authors
-router.get('/allAuthors',verifyToken, getAllAuthors)
+router.get('/allAuthors', getAllAuthors)
 
 //add author
 router.post('/addAuthor', verifyToken,addAuthor) 
@@ -33,6 +33,6 @@ router.put('/updateAuthor/:id',verifyToken,updateAuthor)
 router.delete('/deleteAuthor/:id',verifyToken,deleteAuthor)
 
 //search
-router.get('/search',verifyToken,searchBooksAndAuthors)
+router.get('/search',searchBooksAndAuthors)
 
 module.exports = router;

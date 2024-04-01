@@ -21,17 +21,18 @@ const Login = () => {
         e.preventDefault();
         // login authentication 
         try {
-            const setCookie = (name, value, days) => {
-                const date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                const expires = "expires=" + date.toUTCString();
-                document.cookie = name + "=" + value + ";" + expires + ";path=/";
-              };
+            // const setCookie = (name, value, days) => {
+            //     const date = new Date();
+            //     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            //     const expires = "expires=" + date.toUTCString();
+            //     document.cookie = name + "=" + value + ";" + expires + ";path=/";
+            //   };
               
               // Usage example
               
             const response = await axios.post('http://localhost:5000/login', { email, password });
-            setCookie('jwt','Bearer '+response.data.token, );
+
+            // setCookie('jwt',response.data.token, );
 
             
             if ( response.status===200) {
@@ -41,7 +42,7 @@ const Login = () => {
                //document.cookie = `jwt=Bearer ${response.data.token};max-age=604800;HttpOnly=true`;
 
 
-               navigate('/search');
+               navigate('/allBooks');
             } else {
               console.log('Login failed:', response.data.message);
             }

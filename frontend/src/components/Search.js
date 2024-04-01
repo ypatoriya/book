@@ -2,23 +2,37 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Search = () => {
     const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
+    const navigate = useNavigate()
+    const handleClick = (e) => {
+        navigate('/allBooks')
+    }
+
     const handleSearch = async () => {
         try {
-            const token = localStorage.getItem('token');
+
             // if (!token) {
-                
+
 
             //     console.error('No token found. User is not authenticated.');
             //     return;
             // }
-            const response = await fetch(`http://localhost:5000/search?q=${query}`);
 
-            setSearchResults(response.data.data); 
+            //fetch(`http://localhost:5000/search?q=${query}`);
+
+            const response = await axios.get(`http://localhost:5000/search?q=${query}`)
+                .then(function (response) {
+                    console.log(response);
+                    setSearchResults(response.data.data);
+
+                });
+
+            //setSearchResults(response.data.data);
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
@@ -31,7 +45,7 @@ const Search = () => {
                     <div className="input-group mb-4">
                         <input
                             type="text"
-                            className="form-control form-control-md" 
+                            className="form-control form-control-md"
                             style={{ width: '150px' }}
                             placeholder="Search..."
                             value={query}
@@ -44,6 +58,14 @@ const Search = () => {
                                 onClick={handleSearch}
                             >
                                 Search
+                            </button>
+
+                            <button
+                                className="btn btn-primary btn-sm"
+                                type="button"
+                                onClick={handleClick}
+                            >
+                                Show All Books
                             </button>
                         </div>
                     </div>

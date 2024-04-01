@@ -1,6 +1,7 @@
 import React, { useState, useHistory } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate, Link } from 'react-router-dom';
 
 const AddBook = () => {
   const [formData, setFormData] = useState({
@@ -11,8 +12,8 @@ const AddBook = () => {
     author_id: '',
     genre_id: '',
   });
- 
-  const history = useHistory();
+
+  //const history = useHistory();
 
   // Function to handle form field changes
   const handleInputChange = (event) => {
@@ -23,32 +24,41 @@ const AddBook = () => {
     });
   };
 
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    navigate('/allBooks')
+  }
 
   const handleSubmit = async (event) => {
+
+
     event.preventDefault();
     try {
 
       //const response = await axios.post('http:localhost:5000/addBook', formData);
-        
+
       axios({
         method: 'post',
         url: 'http://localhost:5000/addBook',
         data: {
           ...formData
         },
-        
+
         // validateStatus: (status) => {
         //   return true; 
         // },
 
-        
       }).catch(error => {
-          console.log(error);
+        console.log(error);
       }).then(response => {
-          console.log(response);
+        console.log(response);
+        //navigate('/allBooks');
+
       });
       //console.log(response.data); // Handle response from backend
-      history.push('/allBooks');
+      //navigate('/allBooks');
+
     } catch (error) {
       console.error('Error registering book:', error);
     }
@@ -56,8 +66,8 @@ const AddBook = () => {
 
   return (
     <div className="container mt-5">
-      <div className="row justify-content-center"> {/* Center the form */}
-        <div className="col-md-6"> {/* Limit the width */}
+      <div className="row justify-content-center">
+        <div className="col-md-6">
           <h2>Register Book</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -85,11 +95,19 @@ const AddBook = () => {
               <input type="text" className="form-control" id="genreId" name="genre_id" value={formData.genreId} onChange={handleInputChange} />
             </div>
             <button type="submit" className="btn btn-primary">Register</button>
+
+            <button
+              className="btn btn-primary btn-sm"
+              type="button"
+              onClick={handleClick}
+            >
+              Show All Books
+            </button>
           </form>
         </div>
       </div>
     </div>
-  );  
+  );
 };
 
 export default AddBook;

@@ -15,7 +15,7 @@ const checkLogin = async (req, res) => {
 
         if (existingUser) {
             const token = generateToken(existingUser);
-            res.cookie('jwt','Bearer '+ token,{maxAge:24*60*60*1000,httpOnly:true}
+            res.cookie('jwt', token,{maxAge:60*60*1000,httpOnly:true}
         
         )
 
