@@ -14,7 +14,7 @@ const getAllAuthors = async (req,res) => {
             })
         }
         res.status(200).send({
-            message: 'data fetched!',
+            message: 'data fetched!', 
             data: data[0]
         })
     }catch(error){

@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     }
 
     jwt.verify(token, 'crud', (err, decoded) => {
-        if (err) {
+        if (err) { 
             return res.status(401).json({ message: 'Invalid token!' });
         }
 

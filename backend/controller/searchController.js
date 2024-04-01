@@ -9,7 +9,7 @@ const searchBooksAndAuthors = async (req, res) => {
         const query = req.query.q;
 
         const sqlQuery = `
-            SELECT 
+            SELECT  
                 b.book_id,
                 b.title AS book_title,
                 b.description AS book_description,
