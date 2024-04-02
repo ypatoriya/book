@@ -7,8 +7,11 @@ const getAllBooks = async (req, res) => {
         const pageSize = parseInt(req.query.pageSize) || 5; 
         const offset = (page - 1) * pageSize;
 
-        const query = 'SELECT book.*, author.author_name FROM book JOIN author ON book.author_id = author.author_id LIMIT ? OFFSET ?';
-        const [books] = await db.query(query, [pageSize, offset]);
+        // const query = 'SELECT book.*, author.author_name FROM book JOIN author ON book.author_id = author.author_id LIMIT ? OFFSET ?';
+        // const [books] = await db.query(query, [pageSize, offset]);
+
+        const query = `SELECT * FROM book LIMIT ? OFFSET ?`
+        const [books] = await db.query(query,[pageSize,offset])
 
         if (!books || books.length === 0) {
             return res.status(404).send({
@@ -106,19 +109,7 @@ const updateBoook = async (req, res) => {
 const deleteBook = async (req, res) => {
     try {
       const id = req.params.id;
-      const result = await db.query(`
-        DELETE FROM book
-        WHERE book_id = ?
-          AND book_id IN (
-            SELECT b.book_id
-            FROM book b
-            WHERE NOT EXISTS (
-              SELECT 1
-              FROM author a
-              WHERE a.author_id = b.author_id
-            )
-          )
-      `, [id]);
+      const result = await db.query(`DELETE FROM book WHERE book_id = ? AND author_id NOT IN (SELECT author_id FROM author WHERE author.author_id = book.author_id)`, [id]);
   
       if (result.rowCount === 0) {
         return res.status(400).send({ message: 'Cannot delete book because the associated author exists!' });

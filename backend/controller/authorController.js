@@ -7,15 +7,21 @@ const express = require('express')
 const getAllAuthors = async (req,res) => {
     try{
 
-        const data = await db.query(`SELECT * FROM author`)
-        if(!data){
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 5; 
+        const offset = (page - 1) * pageSize;
+
+        const query = `SELECT * FROM author LIMIT ? OFFSET ?`
+        const [author] = await db.query(query,[pageSize,offset])
+
+        if(!author){
             res.send(404).send({
                 message: 'no records found!'
             })
         }
         res.status(200).send({
             message: 'data fetched!', 
-            data: data[0]
+            data: author
         })
     }catch(error){
         console.log(error)

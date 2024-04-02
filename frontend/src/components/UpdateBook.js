@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 const UpdateBook = () => {
-
     const navigate = useNavigate()
   const [bookData, setBookData] = useState({
     book_id: '',
-    title: '',
+    title: '', 
     description: '',
     published_year: '',
     quantity_available: '',
     author_id: '',
     genre_id: ''
   });
+
+  const formData = {
+    book_id: bookData.book_id,
+    title: bookData.title,
+    description:bookData.description, 
+    published_year:bookData.published_year, 
+    quantity_available:bookData.quantity_available, 
+    author_id: bookData.author_id, 
+    genre_id: bookData.genre_id
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,6 +36,7 @@ const UpdateBook = () => {
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', `http://localhost:5000/updateBook/${bookData.book_id}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(formData))
     xhr.onload = function () {
       if (xhr.status === 200) {
         console.log('Book updated successfully');
@@ -37,7 +47,8 @@ const UpdateBook = () => {
     xhr.onerror = function () {
       console.error('Error updating book. Network error');
     };
-    xhr.send(JSON.stringify(bookData));
+    //xhr.send(JSON.stringify(formData));
+
     navigate('/allBooks')
     
   };
@@ -46,6 +57,10 @@ const UpdateBook = () => {
     <div className="container mt-5">
       <h2>Update Book</h2>
       <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+          <label htmlFor="title" className="form-label">ID</label>
+          <input type="text" className="form-control" id="id" name="id" setBookData={bookData.book_id} onChange={handleChange} />
+        </div>  
         <div className="mb-3">
           <label htmlFor="title" className="form-label">Title</label>
           <input type="text" className="form-control" id="title" name="title" value={bookData.title} onChange={handleChange} />

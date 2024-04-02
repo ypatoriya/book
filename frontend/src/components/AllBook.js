@@ -29,11 +29,12 @@ const AllBook = () => {
   };
 
   const handleEdit = (bookId) => {
-    navigate('/updateBook')
+    navigate(`/updateBook/${bookId}`)
     console.log('Edit book with ID:', bookId);
   };
 
   const handleDelete = (bookId) => {
+    
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', `http://localhost:5000/deleteBook/${bookId}`, true);
     xhr.onload = function () {
@@ -47,6 +48,7 @@ const AllBook = () => {
       console.error('Error deleting book. Network error');
     };
     xhr.send();
+    window.location.reload()
   };
   
   useEffect(() => {

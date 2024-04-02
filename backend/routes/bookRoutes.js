@@ -33,7 +33,7 @@ router.post('/addAuthor', verifyToken,addAuthor)
 router.put('/updateAuthor/:id',verifyToken,updateAuthor)
 
 //delete author
-router.delete('/deleteAuthor/:id',verifyToken,deleteAuthor)
+router.delete('/deleteAuthor/:id',deleteAuthor)
 
 //search
 router.get('/search',searchBooksAndAuthors)
