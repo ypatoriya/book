@@ -1,92 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
-
+import { useParams, useNavigate } from 'react-router-dom';
 
 const UpdateBook = () => {
-    const navigate = useNavigate()
-  const [bookData, setBookData] = useState({
-    book_id: '',
-    title: '', 
-    description: '',
-    published_year: '',
-    quantity_available: '',
-    author_id: '',
-    genre_id: ''
-  });
+  const { bookId } = useParams();
+  const navigate = useNavigate();
+  const [bookData, setBookData] = useState({});
 
-  const formData = {
-    book_id: bookData.book_id,
-    title: bookData.title,
-    description:bookData.description, 
-    published_year:bookData.published_year, 
-    quantity_available:bookData.quantity_available, 
-    author_id: bookData.author_id, 
-    genre_id: bookData.genre_id
-  }
+  useEffect(() => {
+    const fetchBookData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/getBookById/${bookId}`);
+        const data = await response.json();
+        setBookData(data.data[0]);
+        console.log(data)
+      } catch (error) {
+        console.error('Error fetching book data:', error);
+      }
+    };
+    fetchBookData();
+  }, [bookId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBookData({ ...bookData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', `http://localhost:5000/updateBook/${bookData.book_id}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(formData))
-    xhr.onload = function () {
-      if (xhr.status === 200) {
+    try {
+      const response = await fetch(`http://localhost:5000/updateBook/${bookId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookData),
+      });
+      if (response.ok) {
         console.log('Book updated successfully');
+        navigate('/allBooks');
       } else {
-        console.error('Failed to update book. Status:', xhr.status);
+        console.error('Failed to update book:', response.statusText);
       }
-    };
-    xhr.onerror = function () {
-      console.error('Error updating book. Network error');
-    };
-    //xhr.send(JSON.stringify(formData));
-
-    navigate('/allBooks')
-    
+    } catch (error) {
+      console.error('Error updating book:', error);
+    }
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Update Book</h2>
-      <form onSubmit={handleSubmit}>
-      <div className="mb-3">
-          <label htmlFor="title" className="form-label">ID</label>
-          <input type="text" className="form-control" id="id" name="id" setBookData={bookData.book_id} onChange={handleChange} />
-        </div>  
-        <div className="mb-3">
-          <label htmlFor="title" className="form-label">Title</label>
-          <input type="text" className="form-control" id="title" name="title" value={bookData.title} onChange={handleChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">Description</label>
-          <input type="text" className="form-control" id="description" name="description" value={bookData.description} onChange={handleChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="published_year" className="form-label">Published Year</label>
-          <input type="text" className="form-control" id="published_year" name="published_year" value={bookData.published_year} onChange={handleChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="quantity_available" className="form-label">Quantity Available</label>
-          <input type="text" className="form-control" id="quantity_available" name="quantity_available" value={bookData.quantity_available} onChange={handleChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="author_id" className="form-label">Author ID</label>
-          <input type="text" className="form-control" id="author_id" name="author_id" value={bookData.author_id} onChange={handleChange} />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="genre_id" className="form-label">Genre ID</label>
-          <input type="text" className="form-control" id="genre_id" name="genre_id" value={bookData.genre_id} onChange={handleChange} />
-        </div>
-        <button type="submit" className="btn btn-primary">Update Book</button>
-      </form>
+    <div>
+      <div className="container mt-5">
+        <h2>Update Book</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="book_id" className="form-label">
+              ID  
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="book_id"
+              name="book_id"
+              value={bookData.book_id || ''} // Use the || operator to handle undefined values
+              readOnly
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="title" className="form-label">Title</label>
+            <input type="text" className="form-control" id="title" name="title" value={bookData.title} onChange={handleChange} />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="description" className="form-label">Description</label>
+            <input type="text" className="form-control" id="description" name="description" value={bookData.description} onChange={handleChange} />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="published_year" className="form-label">Published Year</label>
+            <input type="text" className="form-control" id="published_year" name="published_year" value={bookData.published_year} onChange={handleChange} />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="quantity_available" className="form-label">Quantity Available</label>
+            <input type="text" className="form-control" id="quantity_available" name="quantity_available" value={bookData.quantity_available} onChange={handleChange} />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="author_id" className="form-label">Author ID</label>
+            <input type="text" className="form-control" id="author_id" name="author_id" value={bookData.author_id} onChange={handleChange} />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="genre_id" className="form-label">Genre ID</label>
+            <input type="text" className="form-control" id="genre_id" name="genre_id" value={bookData.genre_id} onChange={handleChange} />
+          </div>
+          <button type="submit" className="btn btn-primary">Update Book</button>
+        </form>
+      </div>
     </div>
   );
 };

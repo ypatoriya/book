@@ -7,7 +7,7 @@ const getAllBooks = async (req, res) => {
         const pageSize = parseInt(req.query.pageSize) || 5; 
         const offset = (page - 1) * pageSize;
 
-        // const query = 'SELECT book.*, author.author_name FROM book JOIN author ON book.author_id = author.author_id LIMIT ? OFFSET ?';
+        // const query = 'SELECT book.*, author.author_name FROM book JOIN author ON book.author_id = author.author_id LIMIT ? OFFSET ?'; 
         // const [books] = await db.query(query, [pageSize, offset]);
 
         const query = `SELECT * FROM book LIMIT ? OFFSET ?`
@@ -123,5 +123,33 @@ const deleteBook = async (req, res) => {
   };
 
 
+const getBookById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await db.query(`SELECT * FROM book WHERE book_id = ?`, [id]);
 
-module.exports = { getAllBooks, addBook, updateBoook,deleteBook }
+        if (result.length === 0) {
+            return res.status(404).send({
+                message: 'No records found'
+            });
+        }
+
+        const data = result[0]; // the first element
+
+        res.status(200).send({
+            message: "Data fetched!",
+            data: data
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: 'Error in get books by id API!',
+            error: error.message // Sending error message for better understanding
+        });
+    }
+}
+
+
+
+module.exports = { getAllBooks, addBook, updateBoook,deleteBook, getBookById }

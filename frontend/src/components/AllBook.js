@@ -29,9 +29,10 @@ const AllBook = () => {
   };
 
   const handleEdit = (bookId) => {
-    navigate(`/updateBook/${bookId}`)
-    console.log('Edit book with ID:', bookId);
+    navigate(`/updateBook/${bookId}`);
   };
+  
+  
 
   const handleDelete = (bookId) => {
     
