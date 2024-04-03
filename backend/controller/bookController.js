@@ -159,19 +159,25 @@ const getImage = async (req, res) => {
         console.log(req.files)
         let id = req.params.id  
         let image = req.files.image //key and auth
-        if(image.length>1){
-            throw new error('multiple file not allowed!')
-        }
 
-        const dirExists = fs.existsSync('public/assets');
+
+        // if(image.length>1){
+        //     throw new error('multiple file not allowed!')
+        // }
+
+       
+         const dirExists = fs.existsSync(`public/assets/`);
+        
         if (!dirExists) {
-            fs.mkdirSync('public/assets', { recursive: true });
+            fs.mkdirSync(`public/assets/`, { recursive: true });
         }
 
         if (image == undefined || image == null) throw new Error("file not found!");
 
        // let savePath = `/public/assets/${Date.now()}.${image.name.split(".").pop()}`
 
+
+       
        let savePath = `/public/assets/${Date.now()}.${image.name.split(".").pop()}`
         image.mv(path.join(__dirname, ".." + savePath), async (err) => {
             if (err) throw new Error("error in uploading")
@@ -184,6 +190,7 @@ const getImage = async (req, res) => {
                 })
             }
         });
+        
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'error in file upload api!' });
