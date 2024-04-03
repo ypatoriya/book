@@ -20,7 +20,7 @@ const UpdateBook = () => {
         }
         const response = await fetch(`http://localhost:5000/getBookById/${bookId}`, {
           headers: {
-            Authorization: token
+            'Authorization': `Bearer ${token}`
           }
         });
         
@@ -53,6 +53,7 @@ const UpdateBook = () => {
       const response = await fetch(`http://localhost:5000/updateBook/${bookId}`, {
         method: 'PUT',
         headers: {
+          'Authorization': localStorage.getItem('accessToken'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(bookData),

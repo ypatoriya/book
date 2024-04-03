@@ -64,9 +64,17 @@ const AllBook = () => {
 
             const response = await axios.get(`http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: token,
                 }
             });
+            console.log(response.status,response)
+            if(response.status==404){
+              
+              alert("No Books Found")
+              return;
+
+            }
+
             setBooks(response.data.data);
         } catch (error) {
             console.error('Error fetching books:', error);
