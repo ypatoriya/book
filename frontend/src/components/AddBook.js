@@ -57,7 +57,6 @@ const AddBook = () => {
 
       });
       //console.log(response.data); // Handle response from backend
-      //navigate('/allBooks');
 
     } catch (error) {
       console.error('Error registering book:', error);

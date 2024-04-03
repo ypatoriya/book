@@ -1,6 +1,6 @@
 const { getAllAuthors, addAuthor, updateAuthor, deleteAuthor } = require("../controller/authorController");
 
-const { getAllBooks, addBook, updateBoook, deleteBook, getBookById } = require("../controller/bookController");
+const { getAllBooks, addBook, updateBoook, deleteBook, getBookById, getImage } = require("../controller/bookController");
 const express = require('express');
 const { searchBooksAndAuthors } = require("../controller/searchController");
 const { checkLogin } = require("../controller/loginController");
@@ -19,6 +19,9 @@ router.post('/addBook',addBook)
 
 //update book 
 router.put('/updateBook/:id',updateBoook)
+
+//image
+router.post('/getImage/:id',getImage)
 
 //get book by id
 router.get('/getBookById/:id',getBookById)

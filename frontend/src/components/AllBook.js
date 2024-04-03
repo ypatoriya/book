@@ -65,9 +65,6 @@ const AllBook = () => {
     fetchBooks();
   }, [page, pageSize]);
 
-
-
-
   return (
     <div className="container mt-5">
       <h2>All Books</h2>
@@ -82,6 +79,7 @@ const AllBook = () => {
             <th>Author Name</th>
             <th>Genre ID</th>
             <th>Actions</th>
+            <th>Image</th>
           </tr>
         </thead>
         <tbody>
@@ -94,6 +92,7 @@ const AllBook = () => {
               <td>{book.quantity_available}</td>
               <td>{book.author_name}</td>
               <td>{book.genre_id}</td>
+              {/* <td>{book.image}</td> */}
               <td>
                 <button className="btn btn-primary btn-sm mx-2" onClick={() => handleEdit(book.book_id)}>Edit</button>
                 <button className="btn btn-danger btn-sm mx-2" onClick={() => handleDelete(book.book_id)}>Delete</button>
