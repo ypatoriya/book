@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import Search from './Search';
 
 const AllBook = () => {
-
-  const validFile = new RegExp('^\d{13}$');
-
 
   const [books, setBooks] = useState([]);
   const [page, setPage] = useState(1);
@@ -37,8 +35,6 @@ const AllBook = () => {
     navigate(`/updateBook/${bookId}`);
   };
   
-  
-
   const handleDelete = (bookId) => {
     
     const xhr = new XMLHttpRequest();
@@ -58,21 +54,31 @@ const AllBook = () => {
   };
   
   useEffect(() => {
-   
     const fetchBooks = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`);
-        setBooks(response.data.data);
-      } catch (error) {
-        console.error('Error fetching books:', error);
-      }
+        try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                console.log('No token found. User is not authenticated.');
+                return;
+            }
+
+            const response = await axios.get(`http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setBooks(response.data.data);
+        } catch (error) {
+            console.error('Error fetching books:', error);
+        }
     };
 
     fetchBooks();
-  }, [page, pageSize]);
+}, [page, pageSize]);
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" >
+      <h2><button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button></h2>
       <h2>All Books</h2>
       <table className="table">
         <thead>
@@ -108,7 +114,7 @@ const AllBook = () => {
         </tbody>
       </table>
       <button className="btn btn-primary btn-sm" type="button" onClick={handleClick}>Add Book</button>
-      <button className="btn btn-primary btn-sm mx-4" type="button" onClick={handleSearch}>Search</button>
+      
 
       <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handlePreviousPage} disabled={page === 1}>Previous Page</button>
       <span className="mx-2">Page {page}</span>

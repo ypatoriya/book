@@ -1,22 +1,27 @@
-// auth.js
-
-const jwt1 = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
-   const {jwt} = (req.cookies)
-   console.log(jwt);
-    const token = req.headers.authorization.split('jwt ')[1]
-    
+    const authorizationHeader = req.headers['authorization'];
 
-    if (!token) {
-        return res.status(403).json({ message: 'Token is required!' });
+    if (!authorizationHeader) {
+        return res.status(401).json({ message: 'Authorization header is missing!' });
     }
 
-    jwt1.verify(token, 'crud', (err, decoded) => {
-        if (err) { 
+    const token = authorizationHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token is missing!' });
+    }
+
+    jwt.verify(token, 'crud', (err, decoded) => {
+        if (err) {
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).json({ message: 'Token expired!' });
+            }
             return res.status(401).json({ message: 'Invalid token!' });
         }
 
+        // The decoded object should contain the payload
         req.user = decoded;
         next();
     });

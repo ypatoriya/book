@@ -4,10 +4,6 @@ import { Container, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 
-// Rest of your component code...
-
-
-
 const Login = () => {
 
     const navigate = useNavigate()
@@ -17,41 +13,24 @@ const Login = () => {
     
  
     const handleSubmit = async (e) => {
-        
         e.preventDefault();
-        // login authentication 
         try {
-            // const setCookie = (name, value, days) => {
-            //     const date = new Date();
-            //     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            //     const expires = "expires=" + date.toUTCString();
-            //     document.cookie = name + "=" + value + ";" + expires + ";path=/";
-            //   };
-              
-              // Usage example
-              
             const response = await axios.post('http://localhost:5000/login', { email, password });
-
-            // setCookie('jwt',response.data.token, );
-
-            
-            if ( response.status===200) {
-
-               // response.status==200
-               //document.cookie('jwt', response.headers['Set-Cookie'],{maxage:24*60*60*1000})
-               //document.cookie = `jwt=Bearer ${response.data.token};max-age=604800;HttpOnly=true`;
-
-
-               navigate('/allBooks');
+    
+            if (response.status === 200) {
+                const token = response.data.token;
+                localStorage.setItem('accessToken', token);
+                navigate('/allBooks');
             } else {
-              console.log('Login failed:', response.data.message);
+                navigate('/');
+                console.error('Login failed:', response.data.message);
             }
-          } catch (error) {
-            console.error('An error occurred:', error);
-          }
-        console.log('email:', email);
-        console.log('Password:', password);
+        } catch (error) {
+            console.error('An error occurred during login:', error);
+            navigate('/');
+        }
     };
+    
 
     return (
         <Container className="d-flex justify-content-center align-items-center vh-100">

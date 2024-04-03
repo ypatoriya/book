@@ -7,17 +7,38 @@ const UpdateBook = () => {
   const navigate = useNavigate();
   const [bookData, setBookData] = useState({});
 
+
   useEffect(() => {
     const fetchBookData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/getBookById/${bookId}`);
-        const data = await response.json();
-        setBookData(data.data[0]);
-        console.log(data)
+        const token = localStorage.getItem('accessToken');
+
+        if (!token) {
+          console.log('No token found. User is not authenticated.');
+          navigate('/');
+          return;
+        }
+        const response = await fetch(`http://localhost:5000/getBookById/${bookId}`, {
+          headers: {
+            Authorization: token
+          }
+        });
+        
+        if (response.status === 200) {
+          const data = await response.json();
+          setBookData(data.data[0]);
+          console.log(data);
+        } else if (response.status === 401) {
+          console.log('Unauthorized access. Token may be invalid or expired.');
+          navigate('/');
+        } else {
+          console.log('Error fetching book data. Status:', response.status);
+        }
       } catch (error) {
         console.error('Error fetching book data:', error);
       }
     };
+
     fetchBookData();
   }, [bookId]);
 
@@ -61,7 +82,7 @@ const UpdateBook = () => {
               className="form-control"
               id="book_id"
               name="book_id"
-              value={bookData.book_id || ''} // Use the || operator to handle undefined values
+              value={bookData.book_id || ''} // || operator to handle undefined values
               readOnly
             />
           </div>

@@ -3,7 +3,7 @@ const { getAllAuthors, addAuthor, updateAuthor, deleteAuthor } = require("../con
 const { getAllBooks, addBook, updateBoook, deleteBook, getBookById, getImage } = require("../controller/bookController");
 const express = require('express');
 const { searchBooksAndAuthors } = require("../controller/searchController");
-const { checkLogin } = require("../controller/loginController");
+const { checkLogin, addUser } = require("../controller/loginController");
 const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
@@ -11,26 +11,29 @@ const router = express.Router();
 //login
 router.post('/login',checkLogin)
 
-//all user
-router.get('/allBooks' ,getAllBooks)
+//adduser
+router.post('/addUser',addUser)
 
-//add book
-router.post('/addBook',addBook)
+//all user
+router.get('/allBooks',verifyToken ,getAllBooks)
+
+//add book 
+router.post('/addBook',verifyToken,addBook)
 
 //update book 
-router.put('/updateBook/:id',updateBoook)
+router.put('/updateBook/:id',verifyToken,updateBoook)
 
 //image
-router.post('/getImage/:id',getImage)
+router.post('/getImage/:id',verifyToken,getImage)
 
 //get book by id
 router.get('/getBookById/:id',getBookById)
 
 //delete book
-router.delete('/deleteBook/:id',deleteBook)
+router.delete('/deleteBook/:id',verifyToken,deleteBook)
 
 //get all authors
-router.get('/allAuthors', getAllAuthors)
+router.get('/allAuthors',verifyToken, getAllAuthors)
 
 //add author
 router.post('/addAuthor', verifyToken,addAuthor) 
@@ -39,9 +42,9 @@ router.post('/addAuthor', verifyToken,addAuthor)
 router.put('/updateAuthor/:id',verifyToken,updateAuthor)
 
 //delete author
-router.delete('/deleteAuthor/:id',deleteAuthor)
+router.delete('/deleteAuthor/:id',verifyToken,deleteAuthor)
 
 //search
-router.get('/search',searchBooksAndAuthors)
+router.get('/search',verifyToken,searchBooksAndAuthors)
 
 module.exports = router;

@@ -1,40 +1,79 @@
 const { verifyToken } = require('../middleware/auth');
-const db = require('../config/db')
+const db = require('../config/db');
 const jwt = require('jsonwebtoken');
 
+const bcrypt = require('bcrypt');
 
 
 const generateToken = (user) => {
-    return jwt.sign({ email: user.email, password: user.password }, 'crud', { expiresIn: '24h' });
+    const payload = { email: user.email, password: user.password };
+    return jwt.sign(payload, 'crud', { expiresIn: '24h' });
 };
 
 const checkLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const [existingUser] = await db.query('SELECT * FROM user WHERE email = ? AND password = ?', [email, password]);
+        const [existingUser] = await db.query('SELECT * FROM user WHERE email = ?', [email]);
 
-        if (existingUser) {
-            const token = generateToken(existingUser);
-            res.cookie('jwt', token,{maxAge:60*60*1000,httpOnly:true}
-        
-        )
+        if (existingUser.length > 0) {
+            const user = existingUser[0];
 
-            // Pass existingUser instead of user
-            return res.status(200).send({ 
-                message: 'Login success!',
-                token: token 
-            });
+            // Compare password
+            const passwordMatch = await bcrypt.compare(password, user.password);
+
+            if (passwordMatch) {
+                const token = generateToken(user);
+                return res.status(200).send({ message: 'Login success!', token: token });
+            } else {
+                return res.status(401).send({ message: 'Incorrect password!' });
+            }
         } else {
-            return res.status(401).send({ message: 'Incorrect email or password!' });
+            return res.status(404).send({ message: 'Email not found! Sign up!' });
         }
     } catch (error) {
         console.log(error);
         res.status(500).send({
-            message: 'Error in login check API!',
+            message: 'Error in login check api!',
             error
         });
+    }};
+
+const addUser = async(req, res) => {
+    try{
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(500).send({
+                message: 'add all fields'
+            })
+        }
+
+        const [existingEmail] = await db.query('SELECT * FROM user WHERE email = ?', [email]);
+
+        if (existingEmail.length > 0) {
+            return res.status(409).send({ message: 'Email already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const data = await db.query("INSERT INTO user (email, password) VALUES (?, ?)", [email, hashedPassword]);
+
+        if (!data) {
+            return res.status(404).send({
+                message: 'error in INSERT query'
+            })
+        }
+
+        res.status(201).send({
+            message: 'record created!'
+        })
+        
+    }catch(error){
+        console.log(error)
+        res.send({
+            message: 'error in addUser api!'
+        })
     }
 }
 
 
-module.exports = {checkLogin}
+module.exports = { checkLogin, addUser };

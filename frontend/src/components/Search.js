@@ -13,9 +13,19 @@ const Search = () => {
         navigate('/allBooks')
     }
 
-    const handleSearch = async () => {
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('accessToken');
+    
+            if (!token) {
+                console.error('No token found. User is not authenticated.');
+                return;
+            }
+    
             const xhr = new XMLHttpRequest();
             xhr.open('GET', `http://localhost:5000/search?q=${query}`, true);
+            xhr.setRequestHeader('Authorization', token); // Set Authorization header
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     console.log(xhr.responseText);
@@ -28,30 +38,11 @@ const Search = () => {
                 console.error('Request failed. Network error');
             };
             xhr.send();
-
-
-            // if (!token) {
-
-
-            //     console.error('No token found. User is not authenticated.');
-            //     return;
-            // }
-
-            //fetch(`http://localhost:5000/search?q=${query}`);
-
-            //AXIOS
-
-            // const response = await axios.get(`http://localhost:5000/search?q=${query}`)
-            //         .then(function (response) {
-            //             console.log(response);
-            //             setSearchResults(response.data.data);
-
-            //         });
-            // } catch (error) {
-            //     console.error('Error fetching search results:', error);
-            // }
-        };
-
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+        }
+    };
+    
         return (
             <div className="container mt-5">
                 <div className="row justify-content-center">

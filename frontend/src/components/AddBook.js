@@ -13,8 +13,6 @@ const AddBook = () => {
     genre_id: '',
   });
 
-  //const history = useHistory();
-
   // Function to handle form field changes
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -30,37 +28,37 @@ const AddBook = () => {
     navigate('/allBooks')
   }
 
+  const handleSearch = () => {
+    navigate('/search')
+  }
+
+
   const handleSubmit = async (event) => {
 
 
     event.preventDefault();
+
     try {
 
-      //const response = await axios.post('http:localhost:5000/addBook', formData);
+      const token = localStorage.getItem('accessToken');
+      if(!token) {
+        console.log('No token found. User is not authenticated.');
+      }
 
-      axios({
-        method: 'post',
-        url: 'http://localhost:5000/addBook',
-        data: {
-          ...formData
-        },
+      const response = await axios.post('http://localhost:5000/addBook', formData, {
+      headers: {
+        Authorization: token
+      }
+    });
 
-        // validateStatus: (status) => {
-        //   return true; 
-        // },
-
-      }).catch(error => {
-        console.log(error);
-      }).then(response => {
-        console.log(response);
-        //navigate('/allBooks');
-
-      });
-      //console.log(response.data); // Handle response from backend
-
-    } catch (error) {
-      console.error('Error registering book:', error);
-    }
+        if (response.status === 200) {
+          console.log('Book added successfully.');
+        } else {
+          console.log(`Unexpected status code: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error registering book:', error.message || JSON.stringify(error));
+      }
   };
 
   return (
@@ -68,6 +66,7 @@ const AddBook = () => {
       <div className="row justify-content-center">
         <div className="col-md-6">
           <h2>Register Book</h2>
+          <h2><button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button></h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="title" className="form-label">Title</label>
