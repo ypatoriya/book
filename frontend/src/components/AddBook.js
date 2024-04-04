@@ -1,4 +1,4 @@
-import React, { useState, useHistory } from 'react';
+import React, { useState, useHistory, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate, Link } from 'react-router-dom';
@@ -32,7 +32,6 @@ const AddBook = () => {
     navigate('/search')
   }
 
-
   const handleSubmit = async (event) => {
 
 
@@ -45,11 +44,10 @@ const AddBook = () => {
         console.log('No token found. User is not authenticated.');
       }
 
-      const response = await axios.post('http://localhost:5000/addBook', formData, {
-      headers: {
-        Authorization: token
-      }
-    });
+      const response = await axios.post('http://localhost:5000/addBook', formData,{ headers: {
+        'Authorization': localStorage.getItem('accessToken'),
+        'Content-Type': 'application/json',
+      }, withCredentials: true });
 
         if (response.status === 200) {
           console.log('Book added successfully.');
@@ -60,6 +58,7 @@ const AddBook = () => {
         console.error('Error registering book:', error.message || JSON.stringify(error));
       }
   };
+  
 
   return (
     <div className="container mt-5">

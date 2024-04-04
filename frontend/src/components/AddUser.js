@@ -13,7 +13,6 @@ const AddBook = () => {
     mobile: ''
   });
 
-  // Function to handle form field changes
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({

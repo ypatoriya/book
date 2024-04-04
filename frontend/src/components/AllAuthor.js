@@ -11,7 +11,7 @@ const AllAuthors = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/allAuthors');
+    navigate('/addAuthor');
   };
 
   const handleSearch = () => {
@@ -49,6 +49,11 @@ const AllAuthors = () => {
     xhr.send();
   };
   
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    navigate('/');
+  };
+
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -85,7 +90,33 @@ const AllAuthors = () => {
 
   return (
     <div className="container mt-5">
-      <h2>All Authors</h2>
+      <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+
+<div class="container-fluid">
+
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <h2>All Authors</h2>
+
+  </div>
+
+  <div class="d-flex align-items-center">
+    <div class="dropdown">
+      
+    <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
+      <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
+      <a class="navbar-brand mt-2 mt-lg-0" href="#">
+      <img
+        src=""
+        height="15"
+        alt="user"
+      />
+    </a>
+    </div>
+  </div>
+</div>
+</nav>
+
       <table className="table">
         <thead>
           <tr>

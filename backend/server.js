@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(morgan('dev'))
 app.use(express.json());
-app.use(cors({allowedHeaders:'*'}))
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
 app.use(cookieParser());
 app.use(fileUpload());
 app.use('/public', express.static(path.join(__dirname, './public/')))

@@ -122,7 +122,6 @@ const AllBook = () => {
           </div>
         </div>
       </nav>
-      <h2></h2>
 
 
       <table className="table">
