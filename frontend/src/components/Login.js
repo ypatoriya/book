@@ -10,7 +10,9 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    
+    const handleRegister = () => {
+        navigate('/addUser');
+    };
  
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,6 +24,7 @@ const Login = () => {
                 localStorage.setItem('accessToken', token);
                 navigate('/allBooks');
             } else {
+                alert('Login failed. Please try again.');
                 navigate('/');
                 console.error('Login failed:', response.data.message);
             }
@@ -59,6 +62,9 @@ const Login = () => {
 
                     <Button variant="primary" type="submit" className="w-100 mt-3">
                         Login
+                    </Button>
+                    <Button variant="primary" type="submit" className="w-100 mt-3" onClick={handleRegister}>
+                        SignUp
                     </Button>
                 </Form>
             </div>

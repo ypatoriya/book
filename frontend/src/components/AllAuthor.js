@@ -52,9 +52,27 @@ const AllAuthors = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/allAuthors?page=${page}&pageSize=${pageSize}`);
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          console.log('No token found. User is not authenticated.');
+          return;
+        }
+
+        const response = await axios.get(`http://localhost:5000/allAuthors?page=${page}&pageSize=${pageSize}`, {
+          headers: {
+            Authorization: token,
+          }
+        });
+        console.log(response.status, response)
+        if (response.status == 404) {
+
+          alert("No Books Found")
+          return;
+
+        }
+
         setAuthors(response.data.data);
-      } catch (error) {
+      }  catch (error) {
         console.error('Error fetching authors:', error);
       }
     };

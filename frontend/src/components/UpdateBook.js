@@ -111,6 +111,10 @@ const UpdateBook = () => {
             <label htmlFor="genre_id" className="form-label">Genre ID</label>
             <input type="text" className="form-control" id="genre_id" name="genre_id" value={bookData.genre_id} onChange={handleChange} />
           </div>
+          <div className="mb-3">
+            <label htmlFor="image" className="form-label">Image</label>
+            <input type="file" className="form-control" id="image" name="image" value={bookData.image} onChange={handleChange} />
+          </div>
           <button type="submit" className="btn btn-primary">Update Book</button>
         </form>
       </div>

@@ -40,8 +40,8 @@ const checkLogin = async (req, res) => {
 
 const addUser = async(req, res) => {
     try{
-        const { email, password } = req.body;
-        if (!email || !password) {
+        const { email, password ,mobile ,image} = req.body;
+        if (!email || !password ) {
             return res.status(500).send({
                 message: 'add all fields'
             })
@@ -55,7 +55,7 @@ const addUser = async(req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const data = await db.query("INSERT INTO user (email, password) VALUES (?, ?)", [email, hashedPassword]);
+        const data = await db.query("INSERT INTO user (email, password,mobile,image) VALUES (?, ?,?,?)", [email, hashedPassword,mobile,image]);
 
         if (!data) {
             return res.status(404).send({

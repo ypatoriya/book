@@ -9,9 +9,13 @@ const AllBook = () => {
   const [books, setBooks] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [image,setImage] = useState([])
+  const [image, setImage] = useState([])
 
   const navigate = useNavigate();
+
+  const handleAllAuthors = () => {
+    navigate('/allAuthors');
+  };
 
   const handleClick = () => {
     navigate('/addBook');
@@ -34,9 +38,9 @@ const AllBook = () => {
   const handleEdit = (bookId) => {
     navigate(`/updateBook/${bookId}`);
   };
-  
+
   const handleDelete = (bookId) => {
-    
+
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', `http://localhost:5000/deleteBook/${bookId}`, true);
     xhr.onload = function () {
@@ -52,42 +56,75 @@ const AllBook = () => {
     xhr.send();
     window.location.reload()
   };
-  
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    navigate('/');
+  };
+
   useEffect(() => {
     const fetchBooks = async () => {
-        try {
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                console.log('No token found. User is not authenticated.');
-                return;
-            }
-
-            const response = await axios.get(`http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`, {
-                headers: {
-                    Authorization: token,
-                }
-            });
-            console.log(response.status,response)
-            if(response.status==404){
-              
-              alert("No Books Found")
-              return;
-
-            }
-
-            setBooks(response.data.data);
-        } catch (error) {
-            console.error('Error fetching books:', error);
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          console.log('No token found. User is not authenticated.');
+          return;
         }
+
+        const response = await axios.get(`http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`, {
+          headers: {
+            Authorization: token,
+          }
+        });
+        console.log(response.status, response)
+        if (response.status == 404) {
+
+          alert("No Books Found")
+          return;
+
+        }
+
+        setBooks(response.data.data);
+      } catch (error) {
+        console.error('Error fetching books:', error);
+      }
     };
 
     fetchBooks();
-}, [page, pageSize]);
+  }, [page, pageSize]);
 
   return (
+   
     <div className="container mt-5" >
-      <h2><button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button></h2>
-      <h2>All Books</h2>
+      <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
+
+        <div class="container-fluid">
+
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <h2>All Books</h2>
+
+          </div>
+
+          <div class="d-flex align-items-center">
+            <div class="dropdown">
+              
+            <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
+              <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
+              <a class="navbar-brand mt-2 mt-lg-0" href="#">
+              <img
+                src=""
+                height="15"
+                alt="user"
+              />
+            </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <h2></h2>
+
+
       <table className="table">
         <thead>
           <tr>
@@ -122,7 +159,8 @@ const AllBook = () => {
         </tbody>
       </table>
       <button className="btn btn-primary btn-sm" type="button" onClick={handleClick}>Add Book</button>
-      
+      <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleAllAuthors}>All Author</button>
+
 
       <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handlePreviousPage} disabled={page === 1}>Previous Page</button>
       <span className="mx-2">Page {page}</span>
