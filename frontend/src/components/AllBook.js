@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
-import Search from './Search';
+import { Container, Form, Button, Alert } from 'react-bootstrap';
 
 const AllBook = () => {
 
@@ -10,6 +10,8 @@ const AllBook = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [image, setImage] = useState([])
+  const [errorMessage, setErrorMessage] = useState('');
+  const [maxBooksPerPage, setMaxBooksPerPage] = useState(5);
 
   const navigate = useNavigate();
 
@@ -41,20 +43,29 @@ const AllBook = () => {
 
   const handleDelete = (bookId) => {
 
+    const isConfirmed = window.confirm('Are you sure you want to delete this book?');
+
+    if (!isConfirmed) {
+      return;
+    }
+
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', `http://localhost:5000/deleteBook/${bookId}`, true);
     xhr.onload = function () {
       if (xhr.status === 200) {
+        setErrorMessage('Book deleted successfully');
         console.log('Book deleted successfully');
       } else {
+        setErrorMessage("Failed to delete book. As author has books.");
         console.error('Failed to delete book. Status:', xhr.status);
+        window.location.reload()
       }
     };
     xhr.onerror = function () {
       console.error('Error deleting book. Network error');
     };
     xhr.send();
-    window.location.reload()
+
   };
 
   const handleLogout = () => {
@@ -94,7 +105,7 @@ const AllBook = () => {
   }, [page, pageSize]);
 
   return (
-   
+
     <div className="container mt-5" >
       <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
 
@@ -102,27 +113,27 @@ const AllBook = () => {
 
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <h2>All Books</h2>
+            <h2>All Books</h2>
 
           </div>
 
           <div class="d-flex align-items-center">
             <div class="dropdown">
-              
-            <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
+
+              <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
               <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
               <a class="navbar-brand mt-2 mt-lg-0" href="#">
-              <img
-                src=""
-                height="15"
-                alt="user"
-              />
-            </a>
+                <img
+                  src=""
+                  height="15"
+                  alt="user"
+                />
+              </a>
             </div>
           </div>
         </div>
       </nav>
-
+      {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
       <table className="table">
         <thead>
@@ -163,7 +174,8 @@ const AllBook = () => {
 
       <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handlePreviousPage} disabled={page === 1}>Previous Page</button>
       <span className="mx-2">Page {page}</span>
-      <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleNextPage}>Next Page</button>
+
+      <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleNextPage} disabled={books.length < pageSize}>Next Page</button>
     </div>
   );
 };

@@ -1,51 +1,56 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-
 const Login = () => {
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleRegister = () => {
         navigate('/addUser');
     };
- 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Check if email or password is empty
+        if (!email || !password) {
+            setErrorMessage('Please enter both email and password.');
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:5000/login', { email, password });
-    
+
             if (response.status === 200) {
                 const token = response.data.token;
                 localStorage.setItem('accessToken', token);
                 navigate('/allBooks');
             } else {
-                alert('Login failed. Please try again.');
-                navigate('/');
+                setErrorMessage('Login failed. Please try again.');
                 console.error('Login failed:', response.data.message);
             }
         } catch (error) {
             console.error('An error occurred during login:', error);
-            navigate('/');
+            setErrorMessage('An error occurred during login. Please try again later.');
         }
     };
-    
 
     return (
         <Container className="d-flex justify-content-center align-items-center vh-100">
             <div className="login-form p-4 border rounded">
                 <h3 className="text-center">Login</h3>
+                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                 <Form onSubmit={handleSubmit} className="mt-3">
                     <Form.Group controlId="formUsername">
                         <Form.Label>Email</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Enter your username"
-                            value={email} required
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </Form.Group>
@@ -55,7 +60,7 @@ const Login = () => {
                         <Form.Control
                             type="password"
                             placeholder="Enter your password"
-                            value={password} required
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </Form.Group>
@@ -63,7 +68,7 @@ const Login = () => {
                     <Button variant="primary" type="submit" className="w-100 mt-3">
                         Login
                     </Button>
-                    <Button variant="primary" type="submit" className="w-100 mt-3" onClick={handleRegister}>
+                    <Button variant="primary" className="w-100 mt-3" onClick={handleRegister}>
                         SignUp
                     </Button>
                 </Form>

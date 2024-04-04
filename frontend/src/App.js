@@ -21,8 +21,6 @@ function App() {
       <Route path="/allAuthors" element={<AllAuthors/>}/>
       <Route path="/addUser" element={<AddUser/>}/>
       <Route path="/addAuthor" element={<AddAuthor/>}/>
-      
-
     </Routes>
   );
 }

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './addUser.css'
 
 const AddBook = () => {
+  const [errorMessage, setErrorMessage] = useState()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,28 +31,33 @@ const AddBook = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.mobile) {
+      setErrorMessage('All fields are required!');
+      return;
+    }
+
     const { password, confirmPassword } = formData;
     if (password !== confirmPassword) {
-        alert("Passwords don't match");
-        console.log("Passwords don't match");
-        return;
+      setErrorMessage("Passwords don't match");
+      console.log("Passwords don't match");
+      return;
     }
-    else{
-        try {
+    else {
+      try {
 
-            const response = await axios.post('http://localhost:5000/addUser', formData, {
-          });
-              if (response.status >= 200) {
-                console.log('Registered successfully.');
-                navigate('/');
-              } else {
-                console.log(`Unexpected status code: ${response.status}`);
-              }
-            } catch (error) {
-              console.error('Error registering user:', error.message || JSON.stringify(error));
-            }
+        const response = await axios.post('http://localhost:5000/addUser', formData, {
+        });
+        if (response.status >= 200) {
+          console.log('Registered successfully.');
+          navigate('/');
+        } else {
+          console.log(`Unexpected status code: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error registering user:', error.message || JSON.stringify(error));
+      }
     }
-    
+
   };
 
   return (
@@ -59,6 +65,7 @@ const AddBook = () => {
       <div className="row justify-content-center">
         <div className="col-md-6">
           <h2>Sign Up</h2>
+          {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="name" className="form-label">Name</label>
@@ -81,26 +88,26 @@ const AddBook = () => {
               <input type="number" required className="form-control" id="mobile" name="mobile" value={formData.mobile} onChange={handleInputChange} />
             </div>
             <div className='mb-3'>
-                <label htmlFor="image" className="form-label">Image</label>
-                <input type="file" className="form-control" id="image" name="image" value={formData.image} onChange={handleInputChange}/>
+              <label htmlFor="image" className="form-label">Image</label>
+              <input type="file" className="form-control" id="image" name="image" value={formData.image} onChange={handleInputChange} />
             </div>
 
             <div className='button'>
-            
-            <button
-              className="btn btn-primary btn-sm mx-1 Login"
-              type="button"
-              onClick={handleLogin}
-            >
-              Login
-            </button>
-            <button
-              className="btn btn-primary btn-sm mx-1 Register"
-              type="button"
-              onClick={handleSubmit}
-            >
-              Register
-            </button>
+
+              <button
+                className="btn btn-primary btn-sm mx-1 Login"
+                type="button"
+                onClick={handleLogin}
+              >
+                Login
+              </button>
+              <button
+                className="btn btn-primary btn-sm mx-1 Register"
+                type="button"
+                onClick={handleSubmit}
+              >
+                Register
+              </button>
             </div>
           </form>
         </div>

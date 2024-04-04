@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './addUser.css'
 
 const AddBook = () => {
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         author_name: '',
         biography: '',
@@ -21,8 +22,17 @@ const AddBook = () => {
 
     const navigate = useNavigate();
 
+    const handleAllAuthors = (event) => {
+        navigate('/allAuthors');
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!formData.author_name || !formData.biography || !formData.genre) {
+            setErrorMessage('All fields are required!');
+            return;
+        }
 
         try {
 
@@ -31,10 +41,12 @@ const AddBook = () => {
                 console.log('No token found. User is not authenticated.');
             }
 
-            const response = await axios.post('http://localhost:5000/addAuthor', formData,{ headers: {
-                'Authorization': localStorage.getItem('accessToken'),
-                'Content-Type': 'application/json',
-              }, withCredentials: true });
+            const response = await axios.post('http://localhost:5000/addAuthor', formData, {
+                headers: {
+                    'Authorization': localStorage.getItem('accessToken'),
+                    'Content-Type': 'application/json',
+                }, withCredentials: true
+            });
 
             if (response.status === 200) {
                 console.log('Book added successfully.');
@@ -51,6 +63,7 @@ const AddBook = () => {
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <h2>Add Author</h2>
+                    {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="author_name" className="form-label">Name</label>
@@ -73,6 +86,13 @@ const AddBook = () => {
                                 onClick={handleSubmit}
                             >
                                 Add Author
+                            </button>
+                            <button
+                                className="btn btn-primary btn-sm mx-1 Login"
+                                type="button"
+                                onClick={handleAllAuthors}
+                            >
+                                Show All Authors
                             </button>
                         </div>
                     </form>

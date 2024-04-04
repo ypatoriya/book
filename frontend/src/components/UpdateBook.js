@@ -6,10 +6,12 @@ const UpdateBook = () => {
   const { bookId } = useParams();
   const navigate = useNavigate();
   const [bookData, setBookData] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
 
 
   useEffect(() => {
     const fetchBookData = async () => {
+
       try {
         const token = localStorage.getItem('accessToken');
 
@@ -47,8 +49,16 @@ const UpdateBook = () => {
     setBookData({ ...bookData, [name]: value });
   };
 
+  const handleShowAllBook = () => {
+    navigate('/allBooks');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!bookData.title || !bookData.description || !bookData.published_year || !bookData.quantity_available || !bookData.author_id || !bookData.genre_id) {
+      setErrorMessage('All fields are required!');
+      return;
+    }
     try {
       const response = await fetch(`http://localhost:5000/updateBook/${bookId}`, {
         method: 'PUT',
@@ -73,6 +83,7 @@ const UpdateBook = () => {
     <div>
       <div className="container mt-5">
         <h2>Update Book</h2>
+        {errorMessage && <p className="text-danger">{errorMessage}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="book_id" className="form-label">
@@ -116,6 +127,7 @@ const UpdateBook = () => {
             <input type="file" className="form-control" id="image" name="image" value={bookData.image} onChange={handleChange} />
           </div> */}
           <button type="submit" className="btn btn-primary">Update Book</button>
+          <button type="submit" className="btn btn-primary mx-5"onClick={handleShowAllBook}>Show All Books</button>
         </form>
       </div>
     </div>

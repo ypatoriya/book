@@ -12,7 +12,7 @@ const getAllBooks = async (req, res) => {
         // const query = 'SELECT book.*, author.author_name FROM book JOIN author ON book.author_id = author.author_id LIMIT ? OFFSET ?'; 
         // const [books] = await db.query(query, [pageSize, offset]);
 
-        const query = `SELECT * FROM book LIMIT ? OFFSET ?`
+        const query = `SELECT book.*, author.author_name FROM book JOIN author ON book.author_id = author.author_id LIMIT ? OFFSET ?`
         const [books] = await db.query(query, [pageSize, offset])
 
         if (!books || books.length === 0) {

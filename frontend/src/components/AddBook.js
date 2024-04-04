@@ -1,9 +1,12 @@
 import React, { useState, useHistory, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 
 const AddBook = () => {
+  const [errorMessage, setErrorMessage] = useState('');
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -37,28 +40,35 @@ const AddBook = () => {
 
     event.preventDefault();
 
+    if (!formData.title || !formData.description || !formData.published_year || !formData.quantity_available || !formData.author_id || !formData.genre_id) {
+      setErrorMessage('All fields are required!');
+      return;
+    }
     try {
 
+
       const token = localStorage.getItem('accessToken');
-      if(!token) {
+      if (!token) {
         console.log('No token found. User is not authenticated.');
       }
 
-      const response = await axios.post('http://localhost:5000/addBook', formData,{ headers: {
-        'Authorization': localStorage.getItem('accessToken'),
-        'Content-Type': 'application/json',
-      }, withCredentials: true });
+      const response = await axios.post('http://localhost:5000/addBook', formData, {
+        headers: {
+          'Authorization': localStorage.getItem('accessToken'),
+          'Content-Type': 'application/json',
+        }, withCredentials: true
+      });
 
-        if (response.status === 200) {
-          console.log('Book added successfully.');
-        } else {
-          console.log(`Unexpected status code: ${response.status}`);
-        }
-      } catch (error) {
-        console.error('Error registering book:', error.message || JSON.stringify(error));
+      if (response.status === 200) {
+        console.log('Book added successfully.');
+      } else {
+        console.log(`Unexpected status code: ${response.status}`);
       }
+    } catch (error) {
+      console.error('Error registering book:', error.message || JSON.stringify(error));
+    }
   };
-  
+
 
   return (
     <div className="container mt-5">
@@ -66,6 +76,8 @@ const AddBook = () => {
         <div className="col-md-6">
           <h2>Register Book</h2>
           <h2><button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button></h2>
+          {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="title" className="form-label">Title</label>
@@ -103,6 +115,7 @@ const AddBook = () => {
           </form>
         </div>
       </div>
+
     </div>
   );
 };

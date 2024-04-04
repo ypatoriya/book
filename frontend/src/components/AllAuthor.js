@@ -33,9 +33,21 @@ const AllAuthors = () => {
     console.log('Edit author with ID:', authorId);
   };
 
+  const handleShowAllBook = () => {
+    navigate('/allBooks');
+  }
   const handleDelete = (authorId) => {
+    const isConfirmed = window.confirm('Are you sure you want to delete this author?');
+    if (!isConfirmed) {
+      return;
+    }
+
     const xhr = new XMLHttpRequest();
     xhr.open('DELETE', `http://localhost:5000/deleteAuthor/${authorId}`, true);
+
+    const token = localStorage.getItem('accessToken');
+    xhr.setRequestHeader('Authorization', token);
+
     xhr.onload = function () {
       if (xhr.status === 200) {
         console.log('Book deleted successfully');
@@ -48,7 +60,7 @@ const AllAuthors = () => {
     };
     xhr.send();
   };
-  
+
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     navigate('/');
@@ -77,7 +89,7 @@ const AllAuthors = () => {
         }
 
         setAuthors(response.data.data);
-      }  catch (error) {
+      } catch (error) {
         console.error('Error fetching authors:', error);
       }
     };
@@ -92,30 +104,30 @@ const AllAuthors = () => {
     <div className="container mt-5">
       <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
 
-<div class="container-fluid">
+        <div class="container-fluid">
 
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-  <h2>All Authors</h2>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <h2>All Authors</h2>
 
-  </div>
+          </div>
 
-  <div class="d-flex align-items-center">
-    <div class="dropdown">
-      
-    <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
-      <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
-      <a class="navbar-brand mt-2 mt-lg-0" href="#">
-      <img
-        src=""
-        height="15"
-        alt="user"
-      />
-    </a>
-    </div>
-  </div>
-</div>
-</nav>
+          <div class="d-flex align-items-center">
+            <div class="dropdown">
+              <button type="submit" className="btn btn-primary btn-sm mx-5" onClick={handleShowAllBook}>Show All Books</button>
+              <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
+              <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
+              <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                <img
+                  src=""
+                  height="15"
+                  alt="user"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
 
       <table className="table">
         <thead>
@@ -124,7 +136,7 @@ const AllAuthors = () => {
             <th>Name</th>
             <th>Biography</th>
             <th>Genre</th>
-           
+
           </tr>
         </thead>
         <tbody>
@@ -143,11 +155,10 @@ const AllAuthors = () => {
         </tbody>
       </table>
       <button className="btn btn-primary btn-sm" type="button" onClick={handleClick}>Add Author</button>
-      <button className="btn btn-primary btn-sm mx-4" type="button" onClick={handleSearch}>Search</button>
 
       <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handlePreviousPage} disabled={page === 1}>Previous Page</button>
       <span className="mx-2">Page {page}</span>
-      <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleNextPage}>Next Page</button>
+      <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleNextPage} disabled={author.length < pageSize}>Next Page</button>
     </div>
   );
 };
