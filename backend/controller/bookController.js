@@ -166,7 +166,7 @@ const getImage = async (req, res) => {
         // }
 
        
-         const dirExists = fs.existsSync(`public/assets/`);
+        const dirExists = fs.existsSync(`public/assets/`);
         
         if (!dirExists) {
             fs.mkdirSync(`public/assets/`, { recursive: true });
@@ -175,8 +175,6 @@ const getImage = async (req, res) => {
         if (image == undefined || image == null) throw new Error("file not found!");
 
        // let savePath = `/public/assets/${Date.now()}.${image.name.split(".").pop()}`
-
-
        
        let savePath = `/public/assets/${Date.now()}.${image.name.split(".").pop()}`
         image.mv(path.join(__dirname, ".." + savePath), async (err) => {

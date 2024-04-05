@@ -8,6 +8,7 @@ import UpdateBook from './components/UpdateBook';
 import AllAuthors from './components/AllAuthor';
 import AddUser from './components/AddUser';
 import AddAuthor from './components/AddAuthor';
+import ClassComponent from './components/ClassComponent';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
       <Route path="/allAuthors" element={<AllAuthors/>}/>
       <Route path="/addUser" element={<AddUser/>}/>
       <Route path="/addAuthor" element={<AddAuthor/>}/>
+      <Route path='/classComponent' element={<ClassComponent/>}/>
     </Routes>
   );
 }

@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const location = useLocation()
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+    useEffect(()=>{
+        if(location.pathname === '/'){
+            localStorage.removeItem('accessToken')
+        }
+
+    })
 
     const handleRegister = () => {
         navigate('/addUser');
@@ -22,13 +30,17 @@ const Login = () => {
             return;
         }
 
+     
+       
         try {
             const response = await axios.post('http://localhost:5000/login', { email, password });
 
             if (response.status === 200) {
+
                 const token = response.data.token;
                 localStorage.setItem('accessToken', token);
                 navigate('/allBooks');
+
             } else {
                 setErrorMessage('Login failed. Please try again.');
                 console.error('Login failed:', response.data.message);

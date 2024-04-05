@@ -38,7 +38,9 @@ const AddBook = () => {
 
             const token = localStorage.getItem('accessToken');
             if (!token) {
-                console.log('No token found. User is not authenticated.');
+                console.log('No token found. User is not authenticated.'); 
+         navigate("/")
+                
             }
 
             const response = await axios.post('http://localhost:5000/addAuthor', formData, {

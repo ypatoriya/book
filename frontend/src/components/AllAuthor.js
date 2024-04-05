@@ -71,8 +71,8 @@ const AllAuthors = () => {
       try {
         const token = localStorage.getItem('accessToken');
         if (!token) {
-          console.log('No token found. User is not authenticated.');
-          return;
+          console.log('No token found. User is not authenticated.'); 
+         navigate("/")
         }
 
         const response = await axios.get(`http://localhost:5000/allAuthors?page=${page}&pageSize=${pageSize}`, {

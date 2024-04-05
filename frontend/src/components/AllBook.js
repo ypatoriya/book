@@ -11,7 +11,6 @@ const AllBook = () => {
   const [pageSize, setPageSize] = useState(5);
   const [image, setImage] = useState([])
   const [errorMessage, setErrorMessage] = useState('');
-  const [maxBooksPerPage, setMaxBooksPerPage] = useState(5);
 
   const navigate = useNavigate();
 
@@ -73,29 +72,51 @@ const AllBook = () => {
     navigate('/');
   };
 
+  const handleImageClick = () => {
+   
+    navigate('/allAuthors');
+  };
+
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         const token = localStorage.getItem('accessToken');
         if (!token) {
-          console.log('No token found. User is not authenticated.');
-          return;
+         console.log('No token found. User is not authenticated.'); 
+         navigate("/")
         }
 
-        const response = await axios.get(`http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`, {
-          headers: {
-            Authorization: token,
-          }
-        });
-        console.log(response.status, response)
-        if (response.status == 404) {
 
-          alert("No Books Found")
-          return;
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`, true);
+        xhr.setRequestHeader('Authorization', token); // Set Authorization header
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log(xhr.responseText);
+                setBooks(JSON.parse(xhr.responseText).data);
+            } else {
+                console.error('Request failed. Status:', xhr.status);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('Request failed. Network error');
+        };
+        xhr.send();
+        
+        // const response = await axios.get(`http://localhost:5000/allBooks?page=${page}&pageSize=${pageSize}`, {
+        //   headers: {
+        //     Authorization: token,
+        //   }
+        // });
+        // console.log(response.status, response)
+        // if (response.status == 404) {
 
-        }
+        //   alert("No Books Found")
+        //   return;
 
-        setBooks(response.data.data);
+        // }
+
+        // setBooks(response.data.data);
       } catch (error) {
         console.error('Error fetching books:', error);
       }
@@ -111,7 +132,6 @@ const AllBook = () => {
 
         <div class="container-fluid">
 
-
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <h2>All Books</h2>
 
@@ -122,7 +142,7 @@ const AllBook = () => {
 
               <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
               <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
-              <a class="navbar-brand mt-2 mt-lg-0" href="#">
+              <a class="navbar-brand mt-2 mt-lg-0" href='' onClick={handleImageClick}>
                 <img
                   src=""
                   height="15"
@@ -133,6 +153,7 @@ const AllBook = () => {
           </div>
         </div>
       </nav>
+
       {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 
       <table className="table">
